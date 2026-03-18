@@ -1,0 +1,490 @@
+return {
+    {
+        Section = "VISUALS & ESP",
+        Buttons = {
+            {
+                Name = "Time Base ESP",
+                Code = [[
+--@rznnq ui 
+--ESP TIMER BASES DISCORD @rznnq (working in STEAL A BRAINROT uwu)
+local RunService = game:GetService("RunService")
+local plotsFolder = workspace:FindFirstChild("Plots")
+local baseEspInstances = {}
+local espBaseThread
+local function createBaseESP(plot, mainPart)
+    if baseEspInstances[plot.Name] then
+        baseEspInstances[plot.Name]:Destroy()
+    end
+    local billboard = Instance.new("BillboardGui")
+    billboard.Name = "rznnq" .. plot.Name
+    billboard.Size = UDim2.new(0, 50, 0, 25)
+    billboard.StudsOffset = Vector3.new(0, 5, 0)
+    billboard.AlwaysOnTop = true
+    billboard.Adornee = mainPart
+    billboard.MaxDistance = 1000
+    billboard.Parent = plot
+    local label = Instance.new("TextLabel")
+    label.Size = UDim2.new(1, 0, 1, 0)
+    label.BackgroundTransparency = 1
+    label.TextScaled = true
+    label.Font = Enum.Font.Arcade
+    label.TextColor3 = Color3.fromRGB(255, 255, 0)
+    label.TextStrokeTransparency = 0
+    label.TextStrokeColor3 = Color3.new(0, 0, 0)
+    label.Parent = billboard
+    baseEspInstances[plot.Name] = billboard
+    return billboard
+end
+local function updateBaseESP()
+    if not plotsFolder then return end
+
+    for _, plot in ipairs(plotsFolder:GetChildren()) do
+        local purchases = plot:FindFirstChild("Purchases")
+        local plotBlock = purchases and purchases:FindFirstChild("PlotBlock")
+        local mainPart = plotBlock and plotBlock:FindFirstChild("Main")
+        local billboard = baseEspInstances[plot.Name]
+
+        local timeLabel = mainPart
+            and mainPart:FindFirstChild("BillboardGui")
+            and mainPart.BillboardGui:FindFirstChild("RemainingTime")
+
+        if timeLabel and mainPart then
+            billboard = billboard or createBaseESP(plot, mainPart)
+            local label = billboard:FindFirstChildWhichIsA("TextLabel")
+            if label then
+                label.Text = timeLabel.Text
+            end
+        elseif billboard then
+            billboard:Destroy()
+            baseEspInstances[plot.Name] = nil
+        end
+    end
+end
+espBaseThread = RunService.RenderStepped:Connect(updateBaseESP)
+                ]]
+            },
+            {
+                Name = "Player ESP & Hitbox",
+                Code = [[
+--@rznnq ui --ESP PLAYERS,HITBOX-DISCORD @rznnq (working in STEAL A BRAINROT uwu) 
+local Players = game:GetService("Players") 
+local player = Players.LocalPlayer 
+local madebyrznnq = true 
+local espConnections = {} 
+
+local function createESP(plr) 
+    if plr == player then return end 
+    if not plr.Character then return end 
+    if plr.Character:FindFirstChild("followme@rznnq") then return end 
+    
+    local char = plr.Character 
+    local hrp = char:FindFirstChild("HumanoidRootPart") 
+    local head = char:FindFirstChild("Head") 
+    
+    if not (hrp and head) then return end 
+    
+    local hitbox = Instance.new("BoxHandleAdornment") 
+    hitbox.Name = "follow me @rznnq" 
+    hitbox.Adornee = hrp 
+    hitbox.Size = Vector3.new(4, 6, 2) 
+    hitbox.Color3 = Color3.fromRGB(128, 0, 128) 
+    hitbox.Transparency = 0.6 
+    hitbox.ZIndex = 10 
+    hitbox.AlwaysOnTop = true 
+    hitbox.Parent = char 
+    
+    local billboard = Instance.new("BillboardGui") 
+    billboard.Name = "cpsito riko" 
+    billboard.Adornee = head 
+    billboard.Size = UDim2.new(0, 200, 0, 50) 
+    billboard.StudsOffset = Vector3.new(0, 3, 0) 
+    billboard.AlwaysOnTop = true 
+    billboard.Parent = char 
+    
+    local label = Instance.new("TextLabel") 
+    label.Size = UDim2.new(1, 0, 1, 0) 
+    label.BackgroundTransparency = 1 
+    label.Text = plr.DisplayName or plr.Name 
+    label.TextColor3 = Color3.fromRGB(255, 0, 255) 
+    label.Font = Enum.Font.Arcade 
+    label.TextScaled = true 
+    label.TextStrokeTransparency = 0.7 
+    label.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) 
+    label.Parent = billboard 
+end 
+
+local function removeESP(plr) 
+    if not plr.Character then return end 
+    local hitbox = plr.Character:FindFirstChild("ESP_Hitbox") 
+    local nameGui = plr.Character:FindFirstChild("ESP_Name") 
+    if hitbox then hitbox:Destroy() end 
+    if nameGui then nameGui:Destroy() end 
+end 
+
+local function enableESP() 
+    for _, plr in ipairs(Players:GetPlayers()) do 
+        if plr ~= player then 
+            if plr.Character then createESP(plr) end 
+            local conn = plr.CharacterAdded:Connect(function() 
+                task.wait(0.1) 
+                if madebyrznnq then createESP(plr) end 
+            end) 
+            table.insert(espConnections, conn) 
+        end 
+    end 
+    
+    local playerAddedConn = Players.PlayerAdded:Connect(function(plr) 
+        if plr == player then return end 
+        local charAddedConn = plr.CharacterAdded:Connect(function() 
+            task.wait(0.1) 
+            if madebyrznnq then createESP(plr) end 
+        end) 
+        table.insert(espConnections, charAddedConn) 
+    end) 
+    table.insert(espConnections, playerAddedConn) 
+end 
+
+local function disableESP() 
+    for _, plr in ipairs(Players:GetPlayers()) do 
+        removeESP(plr) 
+    end 
+    for _, conn in ipairs(espConnections) do 
+        if conn and conn.Connected then conn:Disconnect() end 
+    end 
+    espConnections = {} 
+end 
+
+player.CharacterAdded:Connect(function() 
+    task.wait(0.1) 
+    if madebyrznnq then enableESP() else disableESP() end 
+end) 
+
+if madebyrznnq then enableESP() end
+                ]]
+            },
+            {
+                Name = "Xray Base",
+                Code = [[
+--@rznnq ui --WALLHACK BASES-DISCORD @rznnq (working in STEAL A BRAINROT uwu) 
+local Players = game:GetService("Players") 
+local Workspace = game:GetService("Workspace") 
+local player = Players.LocalPlayer 
+local originalTransparency = {} 
+
+local function isPlayerBase(obj) 	
+    if not (obj:IsA("BasePart") or obj:IsA("MeshPart") or obj:IsA("UnionOperation")) then 		
+        return false 	
+    end 	
+    local n = obj.Name:lower() 	
+    local p = obj.Parent and obj.Parent.Name:lower() or "" 	
+    return n:find("base") or n:find("claim") or p:find("base") or p:find("claim") 
+end 
+
+for _, obj in ipairs(Workspace:GetDescendants()) do 	
+    if isPlayerBase(obj) then 		
+        originalTransparency[obj] = obj.LocalTransparencyModifier 		
+        obj.LocalTransparencyModifier = 0.8 	
+    end 
+end 
+
+Workspace.DescendantAdded:Connect(function(obj) 	
+    if isPlayerBase(obj) then 		
+        originalTransparency[obj] = obj.LocalTransparencyModifier 		
+        obj.LocalTransparencyModifier = 0.8 	
+    end 
+end) 
+
+player.CharacterAdded:Connect(function() 	
+    task.wait(0.5) 	
+    for _, obj in ipairs(Workspace:GetDescendants()) do 		
+        if isPlayerBase(obj) then 			
+            originalTransparency[obj] = obj.LocalTransparencyModifier 			
+            obj.LocalTransparencyModifier = 0.8 		
+        end 	
+    end 
+end)
+                ]]
+            },
+            {
+                Name = "Esp Brainrot",
+                Code = [[
+--@rznnq ui --ESP BRAINROT
+local Players = game:GetService("Players") 
+local Workspace = game:GetService("Workspace") 
+local LocalPlayer = Players.LocalPlayer 
+
+-- Folder lÆ°u ESP 
+local ESP_FOLDER = Instance.new("Folder") 
+ESP_FOLDER.Name = "ESP" 
+ESP_FOLDER.Parent = LocalPlayer:WaitForChild("PlayerGui") 
+
+-- Folder lÆ°u Beam 
+local LINE_FOLDER = Instance.new("Folder") 
+LINE_FOLDER.Name = "ESP_Lines" 
+LINE_FOLDER.Parent = Workspace 
+
+local currentESP 
+local currentBeam 
+local currentPetInfo 
+local a0, a1 
+
+-- HÃ m parse $/s chÃ­nh xÃ¡c hÆ¡n 
+local function parseMoneyPerSec(text) 
+    text = text:match("^%s*(.-)%s*$") 
+    local number, suffix = text:match("%$([%d%.]+)%s*([kKmMbB]?)%s*/?s?") 
+    number = tonumber(number) or 0 
+    if suffix then 
+        suffix = suffix:lower() 
+        if suffix == "k" then number = number * 1000 
+        elseif suffix == "m" then number = number * 1_000_000 
+        elseif suffix == "b" then number = number * 1_000_000_000 end 
+    end 
+    return number 
+end 
+
+-- Táº¡o ESP cho pet 
+local function createESP(petName, infoText, mutationText, targetPart) 
+    if currentESP then currentESP:Destroy() end 
+    local billboard = Instance.new("BillboardGui") 
+    billboard.Size = UDim2.new(0, 150, 0, 50) 
+    billboard.AlwaysOnTop = true 
+    billboard.Adornee = targetPart 
+    billboard.Parent = ESP_FOLDER 
+    billboard.StudsOffset = Vector3.new(0, 3, 0) 
+    
+    local textLabel = Instance.new("TextLabel") 
+    textLabel.Size = UDim2.new(1, 0, 1, 0) 
+    textLabel.BackgroundTransparency = 1 
+    textLabel.TextColor3 = Color3.fromRGB(255, 255, 255) 
+    textLabel.TextStrokeColor3 = Color3.fromRGB(0, 0, 0) 
+    textLabel.TextStrokeTransparency = 0 
+    textLabel.TextScaled = false 
+    textLabel.TextSize = 10 
+    textLabel.RichText = true 
+    textLabel.Text = string.format( '<font color="rgb(255,0,0)">%s</font>\n<font color="rgb(0,255,0)">%s</font>\n<font color="rgb(255,255,0)">%s</font>', petName, infoText, mutationText or "" ) 
+    textLabel.Parent = billboard 
+    currentESP = billboard 
+end 
+
+-- Táº¡o beam ná»‘i vá»›i player 
+local function createBeam(targetPart) 
+    local char = LocalPlayer.Character 
+    if not char or not char:FindFirstChild("HumanoidRootPart") or not targetPart then return end 
+    if currentBeam then currentBeam:Destroy() if a0 then a0:Destroy() end if a1 then a1:Destroy() end end 
+    
+    a0 = Instance.new("Attachment") 
+    a0.Parent = char.HumanoidRootPart 
+    a1 = Instance.new("Attachment") 
+    a1.Parent = targetPart 
+    
+    local beam = Instance.new("Beam") 
+    beam.Attachment0 = a0 
+    beam.Attachment1 = a1 
+    beam.Width0 = 0.35 
+    beam.Width1 = 0.35 
+    beam.FaceCamera = true 
+    beam.LightInfluence = 0 
+    beam.Parent = LINE_FOLDER 
+    currentBeam = beam 
+    
+    task.spawn(function() 
+        while beam.Parent do 
+            local color = Color3.fromHSV((tick() % 5) / 5, 1, 1) 
+            beam.Color = ColorSequence.new(color) 
+            task.wait(0.05) 
+        end 
+    end) 
+end 
+
+-- TÃ¬m con máº¡nh nháº¥t 
+local function findBestPet() 
+    local PlotsFolder = Workspace:FindFirstChild("Plots") 
+    if not PlotsFolder then return end 
+    local bestValue = -1 
+    local bestPet = nil 
+    for _, plot in ipairs(PlotsFolder:GetChildren()) do 
+        local podiums = plot:FindFirstChild("AnimalPodiums") 
+        if podiums then 
+            for _, podium in ipairs(podiums:GetChildren()) do 
+                local spawnPart = podium:FindFirstChild("Base") and podium.Base:FindFirstChild("Spawn") 
+                if spawnPart then 
+                    local attachment = spawnPart:FindFirstChild("Attachment") 
+                    local overhead = attachment and attachment:FindFirstChild("AnimalOverhead") 
+                    if overhead then 
+                        local nameLabel = overhead:FindFirstChild("DisplayName") 
+                        local genLabel = overhead:FindFirstChild("Generation") 
+                        local mutationLabel = overhead:FindFirstChild("Mutation") 
+                        if genLabel then 
+                            local petName = nameLabel and nameLabel.Text or "Unknown" 
+                            local genText = genLabel.Text 
+                            local mutationText = mutationLabel and mutationLabel.Text or "" 
+                            local mps = parseMoneyPerSec(genText) 
+                            local genNumber = tonumber(genText:match("%d+")) or 0 
+                            local value = mps > 0 and mps or genNumber 
+                            if value > bestValue then 
+                                bestValue = value 
+                                bestPet = {name = petName, info = genText, mutation = mutationText, part = spawnPart, value = value} 
+                            end 
+                        end 
+                    end 
+                end 
+            end 
+        end 
+    end 
+    return bestPet 
+end 
+
+-- Update ESP liÃªn tá»¥c 
+local function updateESP() 
+    local pet = findBestPet() 
+    if pet then 
+        local needUpdate = false 
+        if not currentESP then needUpdate = true 
+        elseif currentPetInfo then 
+            if pet.value > currentPetInfo.value or pet.mutation ~= currentPetInfo.mutation then needUpdate = true end 
+        end 
+        if needUpdate then 
+            currentPetInfo = pet 
+            createESP(pet.name, pet.info, pet.mutation, pet.part) 
+            createBeam(pet.part) 
+        end 
+    else 
+        if currentESP then currentESP:Destroy() currentESP = nil currentPetInfo = nil end 
+        if currentBeam then currentBeam:Destroy() currentBeam = nil end 
+    end 
+end 
+
+-- Loop update 0.3s 
+task.spawn(function() while task.wait(0.3) do updateESP() end end)
+                ]]
+            },
+            {
+                Name = "Anti Ragdoll",
+                Code = [[
+--@rznnq ui --ANTI RAGDOLL AND EFFECTS-DISCORD @rznnq (working in STEAL A BRAINROT uwu) 
+if not game:IsLoaded() then game.Loaded:Wait() end 
+
+local Players = game:GetService("Players") 
+local RunService = game:GetService("RunService") 
+local ReplicatedStorage = game:GetService("ReplicatedStorage") 
+local Player = Players.LocalPlayer 
+local PlayerModule = require(Player:WaitForChild("PlayerScripts"):WaitForChild("PlayerModule")) 
+local Controls = PlayerModule:GetControls() 
+local ENABLE_ANTI_RAGDOLL = true 
+local ENABLE_ANTI_ITEM = true 
+local Frozen = false 
+local DisabledRemotes = {} 
+local RemoteWatcher 
+
+local BlockedStates = { 
+    [Enum.HumanoidStateType.Ragdoll] = true, 
+    [Enum.HumanoidStateType.FallingDown] = true, 
+    [Enum.HumanoidStateType.Physics] = true, 
+    [Enum.HumanoidStateType.Dead] = true 
+} 
+
+local RemoteKeywords = { "useitem", "combatservice", "ragdoll" } 
+
+local function ForceNormal(character) 
+    local hum = character:FindFirstChildOfClass("Humanoid") 
+    local hrp = character:FindFirstChild("HumanoidRootPart") 
+    if not hum or not hrp then return end 
+    hum.Health = hum.MaxHealth 
+    hum:ChangeState(Enum.HumanoidStateType.RunningNoPhysics) 
+    if not Frozen then 
+        Frozen = true 
+        hrp.Anchored = true 
+        hrp.AssemblyLinearVelocity = Vector3.zero 
+        hrp.AssemblyAngularVelocity = Vector3.zero 
+        hrp.CFrame += Vector3.new(0, 1.5, 0) 
+    end 
+end 
+
+local function Release(character) 
+    local hrp = character:FindFirstChild("HumanoidRootPart") 
+    if hrp and Frozen then 
+        hrp.Anchored = false 
+        Frozen = false 
+    end 
+end 
+
+local function RestoreMotors(character) 
+    for _, v in ipairs(character:GetDescendants()) do 
+        if v:IsA("Motor6D") then 
+            v.Enabled = true 
+        elseif v:IsA("Constraint") then 
+            v.Enabled = false 
+        end 
+    end 
+end 
+
+local function InitAntiRagdoll(character) 
+    local hum = character:WaitForChild("Humanoid", 10) 
+    if not hum then return end 
+    for state in pairs(BlockedStates) do 
+        hum:SetStateEnabled(state, false) 
+    end 
+    hum.StateChanged:Connect(function(_, new) 
+        if ENABLE_ANTI_RAGDOLL and BlockedStates[new] then 
+            ForceNormal(character) 
+            RestoreMotors(character) 
+        end 
+    end) 
+    RunService.Stepped:Connect(function() 
+        if not ENABLE_ANTI_RAGDOLL then 
+            Release(character) 
+            return 
+        end 
+        if BlockedStates[hum:GetState()] then 
+            ForceNormal(character) 
+        else 
+            Release(character) 
+        end 
+        hum.Health = hum.MaxHealth 
+    end) 
+end 
+
+local function KillRemote(remote) 
+    if not getconnections or not remote:IsA("RemoteEvent") then return end 
+    if DisabledRemotes[remote] then return end 
+    local name = remote.Name:lower() 
+    for _, key in ipairs(RemoteKeywords) do 
+        if name:find(key) then 
+            DisabledRemotes[remote] = {} 
+            for _, c in ipairs(getconnections(remote.OnClientEvent)) do 
+                if c.Disable then 
+                    c:Disable() 
+                    table.insert(DisabledRemotes[remote], c) 
+                end 
+            end 
+            break 
+        end 
+    end 
+end 
+
+local function InitAntiItem() 
+    Controls:Enable() 
+    for _, obj in ipairs(ReplicatedStorage:GetDescendants()) do 
+        KillRemote(obj) 
+    end 
+    RemoteWatcher = ReplicatedStorage.DescendantAdded:Connect(KillRemote) 
+end 
+
+Player.CharacterAdded:Connect(function(char) 
+    task.wait(0.4) 
+    InitAntiRagdoll(char) 
+end) 
+
+if Player.Character then 
+    InitAntiRagdoll(Player.Character) 
+end 
+
+if ENABLE_ANTI_ITEM then 
+    task.delay(0.25, InitAntiItem) 
+end 
+--@rznnq on discord
+                ]]
+            },
+        }
+    },
+}
