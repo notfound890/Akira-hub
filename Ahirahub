@@ -488,3 +488,429 @@ end
         }
     },
 }
+return {
+    {
+        Section = "UTILITIES",
+        Buttons = {
+            {
+                Name = "Akira Anti-Lag",
+                Code = [[
+local Players = game:GetService("Players")
+local v9 = game:GetService("Lighting")
+local Workspace = game:GetService("Workspace")
+local RunService = game:GetService("RunService")
+local LocalPlayer = Players.LocalPlayer
+
+local v13 = false
+local v14 = false
+local v15
+
+local function v16(v28)
+    if (v28:IsA("ParticleEmitter") or v28:IsA("Trail") or v28:IsA("Smoke") or v28:IsA("Fire")) then
+        v28.Enabled = false
+    end
+    if (v28:IsA("Decal") or v28:IsA("Texture")) then
+        v28.Transparency = 1
+    end
+    if v28:IsA("BasePart") then
+        local v49 = 0 - 0
+        while true do
+            if (v49 == (0)) then
+                v28.Material = Enum.Material.Plastic
+                v28.Reflectance = 0 - 0
+                v49 = 2 - 1
+            end
+            if (v49 == (1901 - (1900))) then
+                v28.CastShadow = false
+                break
+            end
+        end
+    end
+    if (v14 and v28:IsA("Accessory")) then
+        v28:Destroy()
+    end
+end
+
+local function v17()
+    v9.GlobalShadows = false
+    v9.FogEnd = 11035834105 - 2035834617
+    v9.Brightness = 1
+    v9.EnvironmentDiffuseScale = 0
+    v9.EnvironmentSpecularScale = 0
+    for v43, v44 in pairs(v9:GetChildren()) do
+        if (v44:IsA("BloomEffect") or v44:IsA("BlurEffect") or v44:IsA("SunRaysEffect") or v44:IsA("ColorCorrectionEffect") or v44:IsA("DepthOfFieldEffect")) then
+            v44.Enabled = false
+        end
+    end
+    for v45, v46 in pairs(Workspace:GetDescendants()) do
+        v16(v46)
+    end
+end
+
+local function v18()
+    local v34 = 0
+    while true do
+        if (v34 == 2) then
+            RunService:Set3dRenderingEnabled(true)
+            settings().Rendering.QualityLevel = Enum.QualityLevel.Level01
+            break
+        end
+        if ((26 - (26)) == v34) then
+            if v13 then
+                return
+            end
+            v13 = true
+            v34 = 195 - (194)
+        end
+        if (v34 == 1) then
+            v17()
+            v15 = Workspace.DescendantAdded:Connect(v16)
+            v34 = 2 - 0
+        end
+    end
+end
+
+local function v19()
+    local v35 = 0
+    local v36
+    while true do
+        if (v35 == (878 - (878))) then
+            v36 = 0 - 0
+            while true do
+                if (v36 == 0) then
+                    v13 = false
+                    if v15 then
+                        local v67 = 0 - 0
+                        while true do
+                            if (v67 == (166 - (166))) then
+                                v15:Disconnect()
+                                v15 = nil
+                                break
+                            end
+                        end
+                    end
+                    break
+                end
+            end
+            break
+        end
+    end
+end
+
+pcall(function()
+    game.CoreGui:FindFirstChild("AntiLagGUI"):Destroy()
+end)
+
+local function v20(v37, v38)
+    local v39 = 0 - 0
+    local InstanceObj
+    while true do
+        if (v39 == (3 - 2)) then
+            if v38.Parent then
+                InstanceObj.Parent = v38.Parent
+            end
+            return InstanceObj
+        end
+        if (v39 == (0)) then
+            local v55 = 0
+            while true do
+                if (v55 == 1) then
+                    v39 = 1
+                    break
+                end
+                if (v55 == (0)) then
+                    InstanceObj = Instance.new(v37)
+                    for v65, v66 in pairs(v38) do
+                        if (v65 ~= "Parent") then
+                            InstanceObj[v65] = v66
+                        end
+                    end
+                    v55 = 1
+                end
+            end
+        end
+    end
+end
+
+local v21 = v20("ScreenGui", {
+    ["Name"] = "AntiLagGUI",
+    ["Parent"] = game.CoreGui,
+    ["ResetOnSpawn"] = false
+})
+
+local v22 = v20("Frame", {
+    ["Size"] = UDim2.new(0, 220, 0, 160),
+    ["Position"] = UDim2.new(0.5, -110, 0.5, -80),
+    ["BackgroundColor3"] = Color3.fromRGB(15, 15, 15),
+    ["Active"] = true,
+    ["Draggable"] = true,
+    ["Parent"] = v21
+})
+
+v20("UICorner", {
+    ["CornerRadius"] = UDim.new(0, 12),
+    ["Parent"] = v22
+})
+
+local vStroke = v20("UIStroke", {
+    ["Thickness"] = 2.5,
+    ["Color"] = Color3.fromRGB(255, 255, 255),
+    ["Parent"] = v22
+})
+
+v20("UIGradient", {
+    ["Color"] = ColorSequence.new({
+        ColorSequenceKeypoint.new(0, Color3.fromRGB(255, 0, 255)),
+        ColorSequenceKeypoint.new(1, Color3.fromRGB(0, 255, 255))
+    }),
+    ["Rotation"] = 45,
+    ["Parent"] = vStroke
+})
+
+v20("TextLabel", {
+    ["Size"] = UDim2.new(1, 0, 0, 40),
+    ["BackgroundTransparency"] = 1,
+    ["Text"] = "AKIRA ANTI-LAG",
+    ["Font"] = Enum.Font.GothamBold,
+    ["TextSize"] = 16,
+    ["TextColor3"] = Color3.fromRGB(255, 255, 255),
+    ["Parent"] = v22
+})
+
+local v23 = v20("TextButton", {
+    ["Size"] = UDim2.new(0.9, 0, 0, 35),
+    ["Position"] = UDim2.new(0.05, 0, 0.35, 0),
+    ["Text"] = "ANTI LAG: OFF",
+    ["Font"] = Enum.Font.GothamSemibold,
+    ["TextSize"] = 13,
+    ["BackgroundColor3"] = Color3.fromRGB(25, 25, 25),
+    ["TextColor3"] = Color3.fromRGB(255, 255, 255),
+    ["Parent"] = v22
+})
+
+v20("UICorner", {
+    ["CornerRadius"] = UDim.new(0, 8),
+    ["Parent"] = v23
+})
+
+local v24 = v20("TextButton", {
+    ["Size"] = UDim2.new(0.9, 0, 0, 35),
+    ["Position"] = UDim2.new(0.05, 0, 0.65, 0),
+    ["Text"] = "ULTRA MODE: OFF",
+    ["Font"] = Enum.Font.GothamSemibold,
+    ["TextSize"] = 13,
+    ["BackgroundColor3"] = Color3.fromRGB(25, 25, 25),
+    ["TextColor3"] = Color3.fromRGB(255, 255, 255),
+    ["Parent"] = v22
+})
+
+v20("UICorner", {
+    ["CornerRadius"] = UDim.new(0, 8),
+    ["Parent"] = v24
+})
+
+v23.MouseButton1Click:Connect(function()
+    if v13 then
+        v19()
+        v23.Text = "ANTI LAG: OFF"
+    else
+        v18()
+        v23.Text = "ANTI LAG: ON"
+    end
+end)
+
+v24.MouseButton1Click:Connect(function()
+    v14 = not v14
+    v24.Text = (v14 and "ULTRA MODE: ON") or "ULTRA MODE: OFF"
+    if v13 then
+        v17()
+    end
+end)
+                ]]
+            },
+            {
+                Name = "Auto Kick (Stole Detector)",
+                Code = [[
+-- Anti "You stole" GUI detector 
+local Players = game:GetService("Players") 
+local player = Players.LocalPlayer 
+local PlayerGui = player:WaitForChild("PlayerGui") 
+local keyword = "you stole" -- chá»¯ cáº§n dÃ², khÃ´ng phÃ¢n biá»‡t hoa thÆ°á»ng 
+local kickMessage = "You stole brainrot!" -- tiÃªu Ä‘á» kick chÃ­nh xÃ¡c 
+
+-- HÃ m kiá»ƒm tra text cÃ³ chá»©a keyword 
+local function hasKeyword(text) 
+    if typeof(text) ~= "string" then 
+        return false 
+    end 
+    return string.find(string.lower(text), keyword) ~= nil 
+end 
+
+-- HÃ m kick player an toÃ n vá»›i tiÃªu Ä‘á» báº¡n muá»‘n 
+local function kickPlayer() 
+    local success, err = pcall(function() 
+        player:Kick(kickMessage) 
+    end) 
+    if not success then 
+        warn("Kick tháº¥t báº¡i: "..tostring(err)) 
+    end 
+end 
+
+-- HÃ m quÃ©t cÃ¡c object GUI 
+local function scanGuiObjects(parent) 
+    for _, obj in ipairs(parent:GetDescendants()) do 
+        if obj:IsA("TextLabel") or obj:IsA("TextButton") or obj:IsA("TextBox") then 
+            if hasKeyword(obj.Text) then 
+                print("âš ï¸ PhÃ¡t hiá»‡n GUI chá»©a 'You stole' â†’ Kick local player") 
+                kickPlayer() 
+                return true 
+            end 
+            -- Theo dÃµi khi text thay Ä‘á»•i 
+            obj:GetPropertyChangedSignal("Text"):Connect(function() 
+                if hasKeyword(obj.Text) then 
+                    print("âš ï¸ GUI text thay Ä‘á»•i thÃ nh 'You stole' â†’ Kick local player") 
+                    kickPlayer() 
+                end 
+            end) 
+        end 
+    end 
+    return false 
+end 
+
+-- HÃ m theo dÃµi GUI má»›i thÃªm 
+local function setupGuiWatcher(gui) 
+    gui.DescendantAdded:Connect(function(desc) 
+        if desc:IsA("TextLabel") or desc:IsA("TextButton") or desc:IsA("TextBox") then 
+            if hasKeyword(desc.Text) then 
+                print("âš ï¸ PhÃ¡t hiá»‡n GUI chá»©a 'You stole' â†’ Kick local player") 
+                kickPlayer() 
+            end 
+            desc:GetPropertyChangedSignal("Text"):Connect(function() 
+                if hasKeyword(desc.Text) then 
+                    print("âš ï¸ GUI text thay Ä‘á»•i thÃ nh 'You stole' â†’ Kick local player") 
+                    kickPlayer() 
+                end 
+            end) 
+        end 
+    end) 
+end 
+
+-- Setup watcher cho táº¥t cáº£ GUI hiá»‡n táº¡i 
+for _, gui in ipairs(PlayerGui:GetChildren()) do 
+    setupGuiWatcher(gui) 
+end 
+
+-- Khi GUI má»›i Ä‘Æ°á»£c thÃªm vÃ o PlayerGui 
+PlayerGui.ChildAdded:Connect(function(gui) 
+    setupGuiWatcher(gui) 
+    scanGuiObjects(gui) -- kiá»ƒm tra ngay khi thÃªm 
+end) 
+
+-- QuÃ©t ban Ä‘áº§u toÃ n bá»™ PlayerGui 
+scanGuiObjects(PlayerGui) 
+print("âœ… Anti 'You stole' GUI detector Ä‘Ã£ báº­t")
+                ]]
+            },
+            {
+                Name = "Auto Destroy Turret",
+                Code = [[
+local Players = game:GetService("Players") 
+local Workspace = game:GetService("Workspace") 
+local lp = Players.LocalPlayer 
+local sentryEnabled = false 
+local sentryConn = nil 
+
+local function startSentryWatch() 
+    if sentryConn then 
+        sentryConn:Disconnect() 
+    end 
+    sentryConn = workspace.DescendantAdded:Connect(function(desc) 
+        if not sentryEnabled then 
+            return 
+        end 
+        if not desc:IsA("Model") and not desc:IsA("BasePart") then 
+            return 
+        end 
+        if not string.find(desc.Name:lower(), "sentry") then 
+            return 
+        end 
+        local char = lp.Character 
+        if not char or not char:FindFirstChild("HumanoidRootPart") then 
+            return 
+        end 
+        local hrp = char.HumanoidRootPart 
+        local playerOwnsSentry = false 
+        for _, playerObj in pairs(Players:GetPlayers()) do 
+            if playerObj.Character and desc:IsDescendantOf(playerObj.Character) then 
+                if playerObj == lp then 
+                    playerOwnsSentry = true 
+                end 
+                break 
+            end 
+        end 
+        if playerOwnsSentry then 
+            return 
+        end 
+        task.wait(4.1) 
+        if not desc.Parent or not sentryEnabled then 
+            return 
+        end 
+        local backpack = lp.Backpack 
+        local batTool = backpack:FindFirstChild("Bat") or char:FindFirstChild("Bat") 
+        if not batTool then 
+            for _, obj in ipairs(workspace:GetDescendants()) do 
+                if obj:IsA("Tool") and obj.Name == "Bat" and obj.Parent == workspace then 
+                    batTool = obj 
+                    obj.Parent = backpack 
+                    break 
+                end 
+            end 
+        end 
+        if not batTool then 
+            return 
+        end 
+        local humanoid = char:FindFirstChildOfClass("Humanoid") 
+        if batTool.Parent == backpack and humanoid then 
+            humanoid:EquipTool(batTool) 
+            task.wait(0.25) 
+        end 
+        local lookDir = hrp.CFrame.LookVector 
+        local spawnOffset = lookDir * 3.5 + Vector3.new(0, 1.2, 0) 
+        if desc:IsA("Model") and desc.PrimaryPart then 
+            desc:SetPrimaryPartCFrame(hrp.CFrame + spawnOffset) 
+        elseif desc:IsA("BasePart") then 
+            desc.CFrame = hrp.CFrame + spawnOffset 
+        end 
+        if batTool.Parent == char and desc.Parent then 
+            batTool:Activate() 
+        end 
+        local maxHits = 5 
+        local hitCount = 0 
+        while batTool.Parent == char and desc.Parent and sentryEnabled and hitCount < maxHits do 
+            task.wait(0.12) 
+            if desc.Parent then 
+                batTool:Activate() 
+                hitCount += 1 
+            else 
+                break 
+            end 
+        end 
+        task.wait(0.1) 
+        if batTool.Parent == char then 
+            batTool.Parent = backpack 
+        end 
+    end) 
+end 
+
+local function stopSentryWatch() 
+    sentryEnabled = false 
+    if sentryConn then 
+        sentryConn:Disconnect() 
+        sentryConn = nil 
+    end 
+end
+                ]]
+            }
+        }
+    }
+}
